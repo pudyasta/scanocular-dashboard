@@ -1,12 +1,13 @@
 import Image from "next/image";
 import React from "react";
 import { Button } from "../../common/button";
+import Link from "next/link";
 
 const index = () => {
   return (
     <>
-      <div className="grid grid-cols-2 w-full h-screen">
-        <div className="banner bg-gradient-45 from-[#FAFAFA00] to-[#0075FF10] flex ">
+      <div className="grid lg:grid-cols-2 w-full h-screen">
+        <div className="lg:flex hidden banner bg-gradient-45 from-[#FAFAFA00] to-[#0075FF10]  ">
           <Image
             width={600}
             height={200}
@@ -14,7 +15,7 @@ const index = () => {
             className="m-auto "
           />
         </div>
-        <div className="form flex flex-col justify-center px-20">
+        <div className="form flex flex-col justify-center lg:px-20 px-5">
           <h2 className="text-4xl uppercase font-semibold text-primary-text">
             scanocular
           </h2>
@@ -41,8 +42,8 @@ const index = () => {
             className="border border-2 border-grey-accent p-3 rounded-xl duration-500 focus:border-primary-blue outline-none"
           />
 
-          <Button type="outlined1" className="mt-10">
-            login
+          <Button type="outlined1" className="mt-10 rounded-xl shadow-xl">
+            <Link href="/dashboard/konfirmasi">login</Link>
           </Button>
         </div>
       </div>
