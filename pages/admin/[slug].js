@@ -1,18 +1,18 @@
 import React from "react";
-import { DashboardItem, DashboardLayout } from "../../core/modules/dashboard";
 import { useRouter } from "next/router";
 import BasicLayout from "../../core/modules/common/BasicLayout";
+import { AdminItem, AdminLayout } from "../../core/modules/admin";
 
-const Menus = () => {
-  const routes = ["home", "datapasien", "konfirmasi"];
+const MenusAdmin = () => {
+  const routes = ["homeadmin", "dataartikel", "listdokter"];
   const router = useRouter().query.slug;
   if (router == undefined) <></>;
 
   return routes.includes(router) ? (
     <BasicLayout title={"Scanocular Dashboard | " + router.toLocaleUpperCase()}>
-      <DashboardLayout>
-        <DashboardItem item={router} />
-      </DashboardLayout>
+      <AdminLayout>
+        <AdminItem item={router} />
+      </AdminLayout>
     </BasicLayout>
   ) : (
     <>
@@ -21,4 +21,4 @@ const Menus = () => {
   );
 };
 
-export default Menus;
+export default MenusAdmin;

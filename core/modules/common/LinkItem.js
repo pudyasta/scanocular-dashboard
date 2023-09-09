@@ -4,6 +4,7 @@ import React from "react";
 
 const LinkItem = ({ children, href, onClick, query }) => {
   const router = useRouter().query.slug;
+  console.log(query);
   return (
     <Link
       onClick={onClick}

@@ -3,9 +3,13 @@ import { BsFillBellFill, BsSearch } from "react-icons/bs";
 import { Button } from "../../../common/button";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import Modal from "react-responsive-modal";
+import "react-responsive-modal/styles.css";
 
 const Konfirmasi = () => {
   const [showModal, setShowModal] = useState(false);
+  const [open, setOpen] = useState(false);
+
   const [data, setData] = useState([
     {
       id: 1,
@@ -31,63 +35,50 @@ const Konfirmasi = () => {
 
   return (
     <>
-      {showModal && (
-        <div className="alert before:content[''] before:w-full before:absolute before:h-screen before:bg-black/50 before:top-0 before:right-0 before:z-20 ">
-          <div className="bar  bg-white absolute z-30 left-[37.5vw] top-[12.5vh] bottom-auto pb-10 min-h-1/2 w-1/4 rounded-xl overflow-hidden flex flex-col">
-            <h2 className="bg-[#F4F4F4] px-8 py-5 text-2xl font-semibold text-primary-blue shadow-xl">
-              Hasil Pemindaian
-            </h2>
-            <Image
-              className="px-8 mt-10 mx-auto"
-              src={"/assets/dashboard/mata.jpg"}
-              height={500}
-              width={700}
-              alt="mata"
-            />
-            <button
-              type="submit"
-              className="mx-8 mt-5 rounded-xl bg-[#DC7226] text-white py-2"
-              onClick={() => setShowModal(false)}
-            >
-              Tutup
-            </button>
-          </div>
-        </div>
-      )}
       <h1 className="md:text-4xl text-xl font-semibold capitalize py-8 text-primary-text">
-        Permintaan konfirmasi Katarak
+        List Dokter
       </h1>
       <div className="bg-white  py-12 px-8 rounded-xl shadow-sm overflow-x-auto overflow-y-auto max-h-[75vh]">
-        <div className="relative">
-          <button className="absolute text-2xl left-4 top-3">
-            <BsSearch />
-          </button>
-          <input
-            placeholder="Cari nama pasien"
-            type="text"
-            name="data"
-            id="data"
-            className="w-full border border-2 border-grey-accent py-3 px-14 rounded-2xl duration-500 focus:border-primary-blue outline-none "
-          />
+        <div className="flex gap-5">
+          <div className="relative">
+            <button className="absolute text-2xl left-4 top-3">
+              <BsSearch />
+            </button>
+            <input
+              placeholder="Cari nama dokter"
+              type="text"
+              name="data"
+              id="data"
+              className="w-96 border border-2 border-grey-accent py-3 px-14 rounded-2xl duration-500 focus:border-primary-blue outline-none "
+            />
+          </div>
+          <Button
+            type="outlined1"
+            className=" rounded-xl q px-3 text-sm font-semibold"
+            onClick={() => setOpen(true)}
+          >
+            Tambah Dokter
+          </Button>
         </div>
-
-        <table class="mt-10 table-auto w-full align-left border-spacing-2">
-          <thead class="text-left">
-            <th className="capitalize text-secondary-text font-semibold w-96">
-              nama
-            </th>
-            <th className="capitalize text-secondary-text font-semibold col-span-2 w-96">
-              email
-            </th>
-            <th className="capitalize text-secondary-text font-semibold w-96">
-              tanggal periksa
-            </th>
-            <th className="capitalize text-secondary-text font-semibold w-96">
-              hasil
-            </th>
-            <th className="capitalize text-secondary-text font-semibold w-96">
-              aksi
-            </th>
+        <table className="mt-10 table-auto w-full align-left border-spacing-2">
+          <thead className="text-left">
+            <tr>
+              <th className="capitalize text-secondary-text font-semibold w-96">
+                nama
+              </th>
+              <th className="capitalize text-secondary-text font-semibold col-span-2 w-96">
+                email
+              </th>
+              <th className="capitalize text-secondary-text font-semibold w-96">
+                tanggal periksa
+              </th>
+              <th className="capitalize text-secondary-text font-semibold w-96">
+                hasil
+              </th>
+              <th className="capitalize text-secondary-text font-semibold w-96">
+                aksi
+              </th>
+            </tr>
           </thead>
           <tbody className="color-primary-text">
             {data.map((e, i) => {
@@ -147,6 +138,36 @@ const Konfirmasi = () => {
             })}
           </tbody>
         </table>
+        <Modal
+          open={open}
+          onClose={() => setOpen(false)}
+          center
+          styles={{ modal: { padding: "10px 20px" } }}
+        >
+          <h2 className="text-xl font-medium text-primary-blue">
+            Tambah Dokter Form
+          </h2>
+          <div className="flex flex-col">
+            <label htmlFor="name" className="mt-10 mb-2">
+              Nama
+            </label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              className="border border-2 border-grey-accent p-3 rounded-xl duration-500 focus:border-primary-blue outline-none w-[50vh]"
+            />
+            <label htmlFor="email" className="mt-10 mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              className="border border-2 border-grey-accent p-3 rounded-xl duration-500 focus:border-primary-blue outline-none w-[50vh]"
+            />
+          </div>
+        </Modal>
       </div>
     </>
   );

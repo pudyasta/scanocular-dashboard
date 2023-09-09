@@ -8,10 +8,12 @@ import {
   BsGridFill,
   BsFillBellFill,
 } from "react-icons/bs";
+import { useRouter } from "next/router";
 
 const DashboardLayout = ({ children }) => {
   const [device, setDevice] = useState("mobile");
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter().query.slug;
 
   const detectDeviceType = () =>
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -24,6 +26,7 @@ const DashboardLayout = ({ children }) => {
       setDevice("desktop");
       setIsOpen(!isOpen);
     }
+    console.log(router);
   }, []);
   return (
     <div className="flex">
@@ -43,43 +46,29 @@ const DashboardLayout = ({ children }) => {
           </div>
           <div className="relative z-10 px-8 my-8 flex flex-col gap-4">
             <LinkItem
-              href="/dashboard/home"
-              query="home"
+              href="/admin/homeadmin"
+              query="homeadmin"
               onClick={() => device == "mobile" && setIsOpen(false)}
             >
               <BsSpeedometer2 /> Dashboard
             </LinkItem>
             <LinkItem
-              href="/dashboard/datapasien"
-              query="datapasien"
+              href="/admin/dataartikel"
+              query="dataartikel"
               onClick={() => device == "mobile" && setIsOpen(false)}
             >
               <BsFillFileEarmarkTextFill /> Data Pasien
             </LinkItem>
             <LinkItem
-              href="/dashboard/konfirmasi"
-              query="konfirmasi"
+              href="/admin/listdokter"
+              query="listdokter"
               onClick={() => device == "mobile" && setIsOpen(false)}
             >
-              <BsFillFolderFill /> Permintaan Konfirmasi
+              <BsFillFolderFill /> List Dokter
             </LinkItem>
           </div>
         </div>
-        <div className="px-8 flex items-center gap-3 break-words my-6  text-white">
-          <Image
-            src="/assets/dashboard/person.png"
-            className="rounded-full"
-            width={60}
-            height={20}
-            alt="profile image"
-          />
-          <div className="w-full relative">
-            <h2 className="text-md">dr. Ako Jarimko, Sp.M. </h2>
-            <h3 className="break-all font-thin text-sm">
-              arkojarimko90@ugm.ac.id
-            </h3>
-          </div>
-        </div>
+        <div className="px-8 flex items-center gap-3 break-words my-6  text-white"></div>
       </div>
       <div className="col-span-10 w-full bg-gray-50 h-screem">
         <div
@@ -95,7 +84,7 @@ const DashboardLayout = ({ children }) => {
           </button>
           <BsFillBellFill />
         </div>
-        <div className="bg-gray-50 px-8 md:px-12 absolute">{children}</div>
+        <div className="bg-gray-50 px-8 md:px-12 ">{children}</div>
       </div>
     </div>
   );
