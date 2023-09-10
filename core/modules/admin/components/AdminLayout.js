@@ -46,20 +46,6 @@ const DashboardLayout = ({ children }) => {
           </div>
           <div className="relative z-10 px-8 my-8 flex flex-col gap-4">
             <LinkItem
-              href="/admin/homeadmin"
-              query="homeadmin"
-              onClick={() => device == "mobile" && setIsOpen(false)}
-            >
-              <BsSpeedometer2 /> Dashboard
-            </LinkItem>
-            <LinkItem
-              href="/admin/dataartikel"
-              query="dataartikel"
-              onClick={() => device == "mobile" && setIsOpen(false)}
-            >
-              <BsFillFileEarmarkTextFill /> Data Pasien
-            </LinkItem>
-            <LinkItem
               href="/admin/listdokter"
               query="listdokter"
               onClick={() => device == "mobile" && setIsOpen(false)}

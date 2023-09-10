@@ -3,32 +3,64 @@ import { BsFillBellFill, BsSearch } from "react-icons/bs";
 import { Button } from "../../../common/button";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const Konfirmasi = () => {
   const [showModal, setShowModal] = useState(false);
-  const [data, setData] = useState([
-    {
-      id: 1,
-      nama: "Pudyasta Satria",
-      email: "pudyastasatria@gmail.com",
-      tanggal: "2 September 2023",
-    },
-    {
-      id: 2,
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    axios
+      .get("https://scanocular.online/api/pemeriksaan/user/9")
+      .then((res) => {
+        setData(res.data.data);
+        console.log(res.data.data.length);
+      })
+      .catch((e) => {
+        Swal.fire(
+          "Gagal",
+          "Sedang terjadi galat silahakan coba kembali",
+          "warning"
+        );
+      });
+  }, []);
 
-      nama: "Dinar Nugroho",
-      email: "dinarnoe99@gmail.com",
-      tanggal: "2 September 2023",
-    },
-    {
-      id: 3,
-      nama: "Fajar Rahmah",
-      email: "fajarrafmahnurrohman@gmail.com",
-      tanggal: "2 September 2023",
-    },
-  ]);
-  useEffect(() => {}, []);
+  const handleRevision = (id) => {
+    axios
+      .put(`https://scanocular.online/api/pemeriksaan/${id}`, {
+        status: "unconfirm",
+      })
+      .then((res) => {
+        Swal.fire("Data telah dikonfirmasi", "", "success");
+      })
+      .catch((e) => {
+        Swal.fire(
+          "Gagal",
+          "Sedang terjadi galat silahakan coba kembali",
+          "warning"
+        );
+      });
+  };
 
+  const handleConfirm = (id) => {
+    axios
+      .put(`https://scanocular.online/api/pemeriksaan/${id}`, {
+        status: "confirm",
+      })
+      .then((res) => {
+        Swal.fire("Data telah direvisi", "", "success");
+      })
+      .catch((e) => {
+        Swal.fire(
+          "Gagal",
+          "Sedang terjadi galat silahakan coba kembali",
+          "warning"
+        );
+      });
+  };
+
+  if (!data) {
+    return <></>;
+  }
   return (
     <>
       {showModal && (
@@ -90,61 +122,83 @@ const Konfirmasi = () => {
             </th>
           </thead>
           <tbody className="color-primary-text">
-            {data.map((e, i) => {
-              return (
-                <tr
-                  key={i}
-                  className="h-16 border-b border-b-2 border-b-gray-100"
-                >
-                  <td>{e.nama}</td>
-                  <td>{e.email}</td>
-                  <td className="max-w-[6rem]">{e.tanggal}</td>
-                  <td>
-                    <a
-                      className="text-primary-blue cursor-pointer"
-                      onClick={() =>
-                        Swal.fire({
-                          imageUrl: "/assets/dashboard/mata.jpg",
-                          imageHeight: 400,
-                          imageAlt: "A tall image",
-                          confirmButtonText: "Tutup",
-                          confirmButtonColor: "#DC7226",
-                        })
-                      }
-                    >
-                      Cek Hasil
-                    </a>
-                  </td>
-                  <td className="max-w-[4rem]">
-                    <Button
-                      children="Konfirmasi"
-                      type="outlined"
-                      className="rounded-xl text-sm py-2"
-                      onClick={(x) => {
-                        Swal.fire({
-                          title: "Konfirmasi Data Pasien?",
-                          icon: "warning",
-                          showCancelButton: true,
-                          confirmButtonColor: "#3085d6",
-                          cancelButtonColor: "#d33",
-                          confirmButtonText: "Ya",
-                        }).then((result) => {
-                          if (result.isConfirmed) {
-                            Swal.fire("Data telah dikonfirmasi", "", "success");
-                            setData(data.filter((a) => a.id !== e.id));
-                          }
-                        });
-                      }}
-                    />
-                    <Button
-                      children="Revisi"
-                      type="primary"
-                      className="rounded-xl text-sm py-2 px-5 bg-red-500 ml-1"
-                    />
-                  </td>
-                </tr>
-              );
-            })}
+            {data
+              .filter((e) => {
+                if (e.diagnosa == "normal" || e.status !== "pending") {
+                  return false;
+                }
+                return true;
+              })
+              .map((e, i) => {
+                return (
+                  <tr
+                    key={i}
+                    className="h-16 border-b border-b-2 border-b-gray-100"
+                  >
+                    <td>{e.nama}</td>
+                    <td>{e.email}</td>
+                    <td className="max-w-[6rem]">{e.date}</td>
+                    <td>
+                      <a
+                        className="text-primary-blue cursor-pointer"
+                        onClick={() =>
+                          Swal.fire({
+                            imageUrl: `https://scanocular.online/media/hasilpemeriksaan/${e.url_image}`,
+                            imageHeight: 400,
+                            imageAlt: "A tall image",
+                            confirmButtonText: "Tutup",
+                            confirmButtonColor: "#DC7226",
+                          })
+                        }
+                      >
+                        Cek Hasil
+                      </a>
+                    </td>
+                    <td className="max-w-[4rem]">
+                      <Button
+                        children="Konfirmasi"
+                        type="outlined"
+                        className="rounded-xl text-sm py-2"
+                        onClick={() => {
+                          Swal.fire({
+                            title: "Konfirmasi Data Pasien?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Ya",
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              handleConfirm(e.id);
+                              setData(data.filter((a) => a.id !== e.id));
+                            }
+                          });
+                        }}
+                      />
+                      <Button
+                        children="Revisi"
+                        type="primary"
+                        className="rounded-xl text-sm py-2 px-5 bg-red-500 ml-1"
+                        onClick={() => {
+                          Swal.fire({
+                            title: "Revisi Data Pasien?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Ya",
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              handleRevision(e.id);
+                              setData(data.filter((a) => a.id !== e.id));
+                            }
+                          });
+                        }}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
