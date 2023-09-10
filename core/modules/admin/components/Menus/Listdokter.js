@@ -8,31 +8,51 @@ import axios from "axios";
 
 const Konfirmasi = () => {
   const [loginData, setLoginData] = useState({
-    nik: "",
-    name: "",
-    str: "",
-    email: "",
-    alamat: "",
-    password: "",
+    name: null,
+    str: null,
+    email: null,
+    alamat: null,
+    password: null,
   });
+  const [open, setOpen] = useState(false);
 
   const handleLogin = () => {
-    axios
-      .post("https://scanocular.online/api/users/dokter/signup", {
-        NIK: loginData.nik,
-        STR: loginData.str,
-        name: loginData.name,
-        email: loginData.email,
-        password: loginData,
-        alamat: loginData.alamat,
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire("Gagal", error.message, "warning");
-      });
+    const { name, str, email, alamat, password } = loginData;
+    if (name && str && email && alamat && password) {
+      axios
+        .post("https://scanocular.online/api/users/dokter/signup/", {
+          STR: loginData.str,
+          name: loginData.name,
+          email: loginData.email,
+          password: loginData.password,
+          alamat: loginData.alamat,
+        })
+        .then((res) => {
+          Swal.fire("Sukses", "Data berhasil ditambahkan", "success");
+          setLoginData({
+            name: null,
+            str: null,
+            email: null,
+            alamat: null,
+            password: null,
+          });
+          setOpen(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          Swal.fire(
+            "Gagal",
+            "Sedang terjadi galat silahakan coba kembali",
+            "warning"
+          );
+        });
+    } else {
+      Swal.fire(
+        "Terjadi Kesalahan",
+        "Harap isi semua data dengan benar!",
+        "info"
+      );
+    }
   };
 
   const dispatchLogin = (e) => {
@@ -41,8 +61,6 @@ const Konfirmasi = () => {
       [e.target.name]: e.target.value,
     });
   };
-
-  const [open, setOpen] = useState(false);
 
   const [data, setData] = useState([
     {
@@ -181,16 +199,6 @@ const Konfirmasi = () => {
             Tambah Dokter Form
           </h2>
           <div className="flex flex-col">
-            <label htmlFor="nik" className="mt-10 mb-2">
-              NIK
-            </label>
-            <input
-              type="text"
-              name="nik"
-              id="nik"
-              className="border border-2 border-grey-accent p-3 rounded-xl duration-500 focus:border-primary-blue outline-none w-[50vh]"
-              onChange={dispatchLogin}
-            />
             <label htmlFor="name" className="mt-8 mb-2">
               Nama
             </label>
