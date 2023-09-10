@@ -1,13 +1,47 @@
 import React, { useEffect, useState } from "react";
-import { BsFillBellFill, BsSearch } from "react-icons/bs";
+import { BsSearch } from "react-icons/bs";
 import { Button } from "../../../common/button";
-import Image from "next/image";
 import Swal from "sweetalert2";
 import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
+import axios from "axios";
 
 const Konfirmasi = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [loginData, setLoginData] = useState({
+    nik: "",
+    name: "",
+    str: "",
+    email: "",
+    alamat: "",
+    password: "",
+  });
+
+  const handleLogin = () => {
+    axios
+      .post("https://scanocular.online/api/users/dokter/signup", {
+        NIK: loginData.nik,
+        STR: loginData.str,
+        name: loginData.name,
+        email: loginData.email,
+        password: loginData,
+        alamat: loginData.alamat,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Gagal", error.message, "warning");
+      });
+  };
+
+  const dispatchLogin = (e) => {
+    setLoginData({
+      ...loginData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const [open, setOpen] = useState(false);
 
   const [data, setData] = useState([
@@ -31,7 +65,6 @@ const Konfirmasi = () => {
       tanggal: "2 September 2023",
     },
   ]);
-  useEffect(() => {}, []);
 
   return (
     <>
@@ -142,31 +175,80 @@ const Konfirmasi = () => {
           open={open}
           onClose={() => setOpen(false)}
           center
-          styles={{ modal: { padding: "10px 20px" } }}
+          styles={{ modal: { padding: "50px 20px" } }}
         >
           <h2 className="text-xl font-medium text-primary-blue">
             Tambah Dokter Form
           </h2>
           <div className="flex flex-col">
-            <label htmlFor="name" className="mt-10 mb-2">
+            <label htmlFor="nik" className="mt-10 mb-2">
+              NIK
+            </label>
+            <input
+              type="text"
+              name="nik"
+              id="nik"
+              className="border border-2 border-grey-accent p-3 rounded-xl duration-500 focus:border-primary-blue outline-none w-[50vh]"
+              onChange={dispatchLogin}
+            />
+            <label htmlFor="name" className="mt-8 mb-2">
               Nama
             </label>
             <input
               type="text"
               name="name"
               id="name"
+              onChange={dispatchLogin}
               className="border border-2 border-grey-accent p-3 rounded-xl duration-500 focus:border-primary-blue outline-none w-[50vh]"
             />
-            <label htmlFor="email" className="mt-10 mb-2">
+            <label htmlFor="name" className="mt-8 mb-2">
+              STR
+            </label>
+            <input
+              type="text"
+              name="str"
+              id="str"
+              onChange={dispatchLogin}
+              className="border border-2 border-grey-accent p-3 rounded-xl duration-500 focus:border-primary-blue outline-none w-[50vh]"
+            />
+            <label htmlFor="email" className="mt-6 mb-2">
               Email
             </label>
             <input
               type="email"
               name="email"
               id="email"
-              className="border border-2 border-grey-accent p-3 rounded-xl duration-500 focus:border-primary-blue outline-none w-[50vh]"
+              onChange={dispatchLogin}
+              className="border border-2 border-grey-accent p-3 rounded-xl duration-500 focus:border-primary-blue outline-none "
+            />
+            <label htmlFor="alamat" className="mt-6 mb-2">
+              Alamat
+            </label>
+            <input
+              type="text"
+              name="alamat"
+              id="alamat"
+              onChange={dispatchLogin}
+              className="border border-2 border-grey-accent p-3 rounded-xl duration-500 focus:border-primary-blue outline-none "
+            />
+            <label htmlFor="password" className="mt-6 mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              onChange={dispatchLogin}
+              className="border border-2 border-grey-accent p-3 rounded-xl duration-500 focus:border-primary-blue outline-none "
             />
           </div>
+          <Button
+            type="outlined1"
+            className="mt-10 rounded-xl shadow-xl w-full"
+            onClick={handleLogin}
+          >
+            Tambahkan
+          </Button>
         </Modal>
       </div>
     </>
