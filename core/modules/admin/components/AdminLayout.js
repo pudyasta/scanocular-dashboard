@@ -26,7 +26,6 @@ const DashboardLayout = ({ children }) => {
       setDevice("desktop");
       setIsOpen(!isOpen);
     }
-    console.log(router);
   }, []);
   return (
     <div className="flex">

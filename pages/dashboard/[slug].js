@@ -4,7 +4,14 @@ import { useRouter } from "next/router";
 import BasicLayout from "../../core/modules/common/BasicLayout";
 
 const Menus = () => {
-  const routes = ["home", "datapasien", "konfirmasi"];
+  const routes = [
+    "home",
+    "datapasien",
+    "konfirmasi",
+    "glukoma",
+    "diabetes",
+    "konfirmasiglukoma",
+  ];
   const router = useRouter().query.slug;
   if (router == undefined) <></>;
 

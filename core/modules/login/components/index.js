@@ -1,9 +1,45 @@
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../common/button";
-import Link from "next/link";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { useRouter } from "next/router";
 
 const index = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { push } = useRouter();
+
+  const handleSubmit = () => {
+    axios
+      .post("https://scanocular.online/api/users/dokter/signin/", {
+        email,
+        password,
+      })
+      .then((res) => {
+        Swal.fire("Login Berhasil", "", "success");
+        localStorage.setItem("userData", JSON.stringify(res.data));
+        push("/dashboard/home");
+      })
+      .catch((e) => {
+        if (e.code == 404) {
+          Swal.fire(
+            "User Tidak Ditemukan",
+            "Harap isi semua data dengan benar!",
+            "info"
+          );
+        } else {
+          Swal.fire("Terjadi Kesalahan", "Silahkan coba lagi", "warning");
+        }
+      });
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem("userData")) {
+      push("/dashboard/home");
+    }
+  }, []);
+
   return (
     <>
       <div className="grid lg:grid-cols-2 w-full h-screen">
@@ -27,6 +63,7 @@ const index = () => {
             Email
           </label>
           <input
+            onChange={(e) => setEmail(e.target.value)}
             type="email"
             name="email"
             id="email"
@@ -36,14 +73,19 @@ const index = () => {
             Password
           </label>
           <input
+            onChange={(e) => setPassword(e.target.value)}
             type="password"
             name="password"
             id="password"
             className="border border-2 border-grey-accent p-3 rounded-xl duration-500 focus:border-primary-blue outline-none"
           />
 
-          <Button type="outlined1" className="mt-10 rounded-xl shadow-xl">
-            <Link href="/dashboard/konfirmasi">login</Link>
+          <Button
+            type="primary"
+            className="mt-10 rounded-xl shadow-xl"
+            onClick={() => handleSubmit()}
+          >
+            Login
           </Button>
         </div>
       </div>

@@ -7,11 +7,17 @@ import {
   BsFillFileEarmarkTextFill,
   BsGridFill,
   BsFillBellFill,
+  BsEyeFill,
+  BsFileBarGraphFill,
+  BsSearch,
 } from "react-icons/bs";
+import { useRouter } from "next/router";
 
 const DashboardLayout = ({ children }) => {
   const [device, setDevice] = useState("mobile");
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const data = JSON.parse(localStorage.getItem("userData"));
 
   const detectDeviceType = () =>
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -20,9 +26,12 @@ const DashboardLayout = ({ children }) => {
       ? "Mobile"
       : "Desktop";
   useEffect(() => {
+    if (!localStorage.getItem("userData")) {
+      router.push("/login");
+    }
     if (detectDeviceType() === "Desktop") {
       setDevice("desktop");
-      setIsOpen(!isOpen);
+      setIsOpen(true);
     }
   }, []);
   return (
@@ -42,7 +51,7 @@ const DashboardLayout = ({ children }) => {
             </h2>
           </div>
           <div className="relative z-10 px-8 my-8 flex flex-col gap-4">
-            <LinkItem
+            {/* <LinkItem
               href="/dashboard/home"
               query="home"
               onClick={() => device == "mobile" && setIsOpen(false)}
@@ -55,14 +64,36 @@ const DashboardLayout = ({ children }) => {
               onClick={() => device == "mobile" && setIsOpen(false)}
             >
               <BsFillFileEarmarkTextFill /> Data Pasien
-            </LinkItem>
+            </LinkItem> */}
             <LinkItem
               href="/dashboard/konfirmasi"
               query="konfirmasi"
               onClick={() => device == "mobile" && setIsOpen(false)}
             >
-              <BsFillFolderFill /> Permintaan Konfirmasi
+              <BsEyeFill /> Konfirmasi Katarak
             </LinkItem>
+            <LinkItem
+              href="/dashboard/konfirmasiglukoma"
+              query="konfirmasiglukoma"
+              onClick={() => device == "mobile" && setIsOpen(false)}
+            >
+              <BsFileBarGraphFill /> Konfirmasi Screening
+            </LinkItem>
+            <LinkItem
+              href="/dashboard/glukoma"
+              query="glukoma"
+              onClick={() => device == "mobile" && setIsOpen(false)}
+            >
+              <BsSearch /> Cek Funduscopy
+            </LinkItem>
+
+            {/* <LinkItem
+              href="/dashboard/diabetes"
+              query="diabetes"
+              onClick={() => device == "mobile" && setIsOpen(false)}
+            >
+              <BsFillFolderFill /> Cek Mata DR
+            </LinkItem> */}
           </div>
         </div>
         <div className="px-8 flex items-center gap-3 break-words my-6  text-white">
@@ -74,10 +105,8 @@ const DashboardLayout = ({ children }) => {
             alt="profile image"
           />
           <div className="w-full relative">
-            <h2 className="text-md">dr. Ako Jarimko, Sp.M. </h2>
-            <h3 className="break-all font-thin text-sm">
-              arkojarimko90@ugm.ac.id
-            </h3>
+            <h2 className="text-md">{data.data.name}</h2>
+            <h3 className="break-all font-thin text-sm">{data.data.email}</h3>
           </div>
         </div>
       </div>

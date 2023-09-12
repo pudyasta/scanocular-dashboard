@@ -4,15 +4,17 @@ import { Button } from "../../../common/button";
 import Image from "next/image";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
-const Konfirmasi = () => {
+const ScreeningGlukoma = () => {
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState(null);
+  let prev;
   useEffect(() => {
     axios
-      .get("https://scanocular.online/api/pemeriksaan/all")
+      .get("https://scanocular.online/api/pemeriksaan/cekmata/screening")
       .then((res) => {
-        console.log(res.data.data);
         setData(res.data.data);
       })
       .catch((e) => {
@@ -26,9 +28,12 @@ const Konfirmasi = () => {
 
   const handleRevision = (id) => {
     axios
-      .put(`https://scanocular.online/api/pemeriksaan/${id}`, {
-        status: "unconfirm",
-      })
+      .put(
+        `https://scanocular.online/api/pemeriksaan/cekmata/screening/${id}`,
+        {
+          status: "unconfirm",
+        }
+      )
       .then((res) => {
         Swal.fire("Data telah dikonfirmasi", "", "success");
       })
@@ -43,26 +48,14 @@ const Konfirmasi = () => {
 
   const handleConfirm = (id) => {
     axios
-      .put(`https://scanocular.online/api/pemeriksaan/${id}`, {
-        status: "confirm",
-      })
+      .put(
+        `https://scanocular.online/api/pemeriksaan/cekmata/screening/${id}`,
+        {
+          status: "confirm",
+        }
+      )
       .then((res) => {
         Swal.fire("Data telah direvisi", "", "success");
-      })
-      .catch((e) => {
-        Swal.fire(
-          "Gagal",
-          "Sedang terjadi galat silahakan coba kembali",
-          "warning"
-        );
-      });
-  };
-
-  const handleDelete = (id) => {
-    axios
-      .delete("https://scanocular.online/api/pemeriksaan/" + id)
-      .then((res) => {
-        Swal.fire("Data telah dihapus", "", "success");
       })
       .catch((e) => {
         Swal.fire(
@@ -78,31 +71,8 @@ const Konfirmasi = () => {
   }
   return (
     <>
-      {showModal && (
-        <div className="alert before:content[''] before:w-full before:absolute before:h-screen before:bg-black/50 before:top-0 before:right-0 before:z-20 ">
-          <div className="bar  bg-white absolute z-30 left-[37.5vw] top-[12.5vh] bottom-auto pb-10 min-h-1/2 w-1/4 rounded-xl overflow-hidden flex flex-col">
-            <h2 className="bg-[#F4F4F4] px-8 py-5 text-2xl font-semibold text-primary-blue shadow-xl">
-              Hasil Pemindaian
-            </h2>
-            <Image
-              className="px-8 mt-10 mx-auto"
-              src={"/assets/dashboard/mata.jpg"}
-              height={500}
-              width={700}
-              alt="mata"
-            />
-            <button
-              type="submit"
-              className="mx-8 mt-5 rounded-xl bg-[#DC7226] text-white py-2"
-              onClick={() => setShowModal(false)}
-            >
-              Tutup
-            </button>
-          </div>
-        </div>
-      )}
       <h1 className="md:text-4xl text-xl font-semibold capitalize py-8 text-primary-text">
-        Permintaan konfirmasi Katarak
+        Permintaan konfirmasi Glukoma dan Diabetes Retinopati
       </h1>
       <div className="bg-white  py-12 px-8 rounded-xl shadow-sm overflow-x-auto overflow-y-auto max-h-[75vh]">
         <div className="relative">
@@ -124,10 +94,10 @@ const Konfirmasi = () => {
               nama
             </th>
             <th className="capitalize text-secondary-text font-semibold col-span-2 w-96">
-              email
+              Tipe penyakit
             </th>
             <th className="capitalize text-secondary-text font-semibold w-96">
-              tanggal periksa
+              email
             </th>
             <th className="capitalize text-secondary-text font-semibold w-96">
               hasil
@@ -139,9 +109,10 @@ const Konfirmasi = () => {
           <tbody className="color-primary-text">
             {data
               .filter((x) => {
-                if (x.diagnosa == "normal" || x.status !== "pending") {
+                if (x.status !== "pending" || x.scan_id == prev) {
                   return false;
                 }
+                prev = x.scan_id;
                 return true;
               })
               .map((e, i) => {
@@ -151,23 +122,15 @@ const Konfirmasi = () => {
                     className="h-16 border-b border-b-2 border-b-gray-100"
                   >
                     <td>{e.name}</td>
-                    <td>{e.email}</td>
-                    <td className="max-w-[6rem]">{e.date}</td>
+                    <td className="capitalize">{e.type_penyakit}</td>
+                    <td className="max-w-[6rem]">{e.email}</td>
                     <td>
-                      <a
+                      <Link
                         className="text-primary-blue cursor-pointer"
-                        onClick={() =>
-                          Swal.fire({
-                            imageUrl: `https://scanocular.online/media/hasilpemeriksaan/${e.url_image}`,
-                            imageHeight: 400,
-                            imageAlt: "A tall image",
-                            confirmButtonText: "Tutup",
-                            confirmButtonColor: "#DC7226",
-                          })
-                        }
+                        href={`/detail/${e.scan_id}`}
                       >
                         Cek Hasil
-                      </a>
+                      </Link>
                     </td>
                     <td className="max-w-[4rem]">
                       <Button
@@ -184,8 +147,10 @@ const Konfirmasi = () => {
                             confirmButtonText: "Ya",
                           }).then((result) => {
                             if (result.isConfirmed) {
-                              handleConfirm(e.id);
-                              setData(data.filter((a) => a.id !== e.id));
+                              handleConfirm(e.scan_id);
+                              setData(
+                                data.filter((a) => a.scan_id !== e.scan_id)
+                              );
                             }
                           });
                         }}
@@ -204,27 +169,7 @@ const Konfirmasi = () => {
                             confirmButtonText: "Ya",
                           }).then((result) => {
                             if (result.isConfirmed) {
-                              handleRevision(e.id);
-                              setData(data.filter((a) => a.id !== e.id));
-                            }
-                          });
-                        }}
-                      />
-                      <Button
-                        children="Hapus"
-                        type="primary"
-                        className="rounded-xl text-sm py-2 px-5 bg-red-500 ml-1"
-                        onClick={() => {
-                          Swal.fire({
-                            title: "Hapus Data?",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#3085d6",
-                            cancelButtonColor: "#d33",
-                            confirmButtonText: "Ya",
-                          }).then((result) => {
-                            if (result.isConfirmed) {
-                              handleDelete(e.id);
+                              handleRevision(e.scan_id);
                               setData(data.filter((a) => a.id !== e.id));
                             }
                           });
@@ -241,4 +186,4 @@ const Konfirmasi = () => {
   );
 };
 
-export default Konfirmasi;
+export default ScreeningGlukoma;
