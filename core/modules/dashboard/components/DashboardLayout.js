@@ -17,6 +17,7 @@ const DashboardLayout = ({ children }) => {
   const [device, setDevice] = useState("mobile");
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const userData = localStorage.getItem("userData");
   const data = JSON.parse(localStorage.getItem("userData"));
 
   const detectDeviceType = () =>
@@ -26,7 +27,7 @@ const DashboardLayout = ({ children }) => {
       ? "Mobile"
       : "Desktop";
   useEffect(() => {
-    if (!localStorage.getItem("userData")) {
+    if (!userData) {
       router.push("/login");
     }
     if (detectDeviceType() === "Desktop") {
@@ -34,6 +35,8 @@ const DashboardLayout = ({ children }) => {
       setIsOpen(true);
     }
   }, []);
+
+  if (!userData) return <></>;
   return (
     <div className="flex">
       <div
@@ -124,7 +127,9 @@ const DashboardLayout = ({ children }) => {
           </button>
           <BsFillBellFill />
         </div>
-        <div className="bg-gray-50 px-8 md:px-12 absolute">{children}</div>
+        <div className="bg-gray-50 px-8 md:px-12 absolute">
+          {userData && children}
+        </div>
       </div>
     </div>
   );

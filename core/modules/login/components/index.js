@@ -19,7 +19,7 @@ const index = () => {
       .then((res) => {
         Swal.fire("Login Berhasil", "", "success");
         localStorage.setItem("userData", JSON.stringify(res.data));
-        push("/dashboard/home");
+        push("/dashboard/konfirmasi");
       })
       .catch((e) => {
         if (e.code == 404) {
