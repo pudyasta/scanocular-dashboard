@@ -156,12 +156,12 @@ const ScreeningGlukoma = () => {
                         }}
                       />
                       <Button
-                        children="Revisi"
+                        children="Unconfirm"
                         type="primary"
                         className="rounded-xl text-sm py-2 px-5 bg-yellow-500 ml-1"
                         onClick={() => {
                           Swal.fire({
-                            title: "Revisi Data?",
+                            title: "Konfirmasi Data?",
                             icon: "warning",
                             showCancelButton: true,
                             confirmButtonColor: "#3085d6",
