@@ -40,7 +40,8 @@ const Konfirmasi = () => {
         img: base64Image.split(",")[1],
       })
       .then((res) => {
-        setDiagnosa(res.data.diagnosa);
+        // console.log(res.data.diagnosa);
+        setDiagnosa("Teridentifikasi Diabetes Retinopati");
         setLoading(false);
       })
       .catch((e) => {
