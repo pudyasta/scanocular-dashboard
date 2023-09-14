@@ -41,7 +41,9 @@ const Konfirmasi = () => {
       })
       .then((res) => {
         // console.log(res.data.diagnosa);
-        setDiagnosa("Teridentifikasi Diabetes Retinopati");
+        setDiagnosa(
+          res.data.diagnosa == "No_DR" ? "Mata Sehat" : "Teridentifikasi DR"
+        );
         setLoading(false);
       })
       .catch((e) => {
