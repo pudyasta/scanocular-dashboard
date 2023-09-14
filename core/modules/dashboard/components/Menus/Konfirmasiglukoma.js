@@ -55,7 +55,7 @@ const ScreeningGlukoma = () => {
         }
       )
       .then((res) => {
-        Swal.fire("Data telah direvisi", "", "success");
+        Swal.fire("Data telah dikonfirmasi", "", "success");
       })
       .catch((e) => {
         Swal.fire(

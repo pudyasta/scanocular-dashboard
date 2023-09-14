@@ -30,7 +30,7 @@ const Konfirmasi = () => {
         status: "unconfirm",
       })
       .then((res) => {
-        Swal.fire("Data telah dikonfirmasi", "", "success");
+        Swal.fire("Data telah direvisi", "", "success");
       })
       .catch((e) => {
         Swal.fire(
@@ -47,7 +47,7 @@ const Konfirmasi = () => {
         status: "confirm",
       })
       .then((res) => {
-        Swal.fire("Data telah direvisi", "", "success");
+        Swal.fire("Data telah dikonfirmasi", "", "success");
       })
       .catch((e) => {
         Swal.fire(
