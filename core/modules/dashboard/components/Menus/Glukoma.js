@@ -47,7 +47,7 @@ const Konfirmasi = () => {
         setLoading(false);
       })
       .catch((e) => {
-        setDiagnosa("Tidak terdeteksi");
+        setDiagnosa("Mata tidak terdeteksi");
 
         setLoading(false);
       });
