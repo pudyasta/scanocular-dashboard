@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import LinkItem from "../../common/LinkItem";
 import {
   BsSpeedometer2,
@@ -13,6 +13,7 @@ import {
 } from "react-icons/bs";
 import { useRouter } from "next/router";
 
+export const sideContext = createContext();
 const DashboardLayout = ({ children }) => {
   const [device, setDevice] = useState("mobile");
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +29,7 @@ const DashboardLayout = ({ children }) => {
       : "Desktop";
   useEffect(() => {
     if (!userData) {
-      router.push("/login");
+      // router.push("/login");
     }
     if (detectDeviceType() === "Desktop") {
       setDevice("desktop");
@@ -36,95 +37,108 @@ const DashboardLayout = ({ children }) => {
     }
   }, []);
 
-  if (!userData) return <></>;
+  // if (!userData) return <></>;
   return (
-    <div className="flex">
+    <div className="flex transition-all">
       <div
-        className={`lg:relative absolute col-span-2 h-screen bg-[#131C55] after:content-[''] after:bg-[url('/assets/dashboard/pattern.png')] after:opacity-40 after:absolute after:w-full after:h-screen after:bg-no-repeat after:bg-cover flex flex-col justify-between 
-        min-w-90 ${
-          !isOpen
-            ? "lg:w-0 lg:translate-x-0 -translate-x-full opacity-0"
-            : "lg:w-1/5 translate-x-0 opacity-1"
-        }  z-20 duration-500 ease-out overflow-hidden`}
+        className={`transition-all lg:relative absolute col-span-2 h-screen bg-[#131C55] after:content-[''] after:bg-[url('/assets/dashboard/pattern.png')] after:opacity-40 after:absolute after:w-full after:h-screen after:bg-no-repeat after:bg-cover flex flex-col justify-between 
+        min-w-90 z-20 duration-500 ease-out overflow-hidden`}
       >
-        <div className="relative z-10 ">
-          <div className="bg-[#0E1B6B] text-center ">
-            <h2 className="text-white uppercase text-lg py-5 font-bold">
-              scanocular
-            </h2>
+        <div className="relative z-10">
+          <div className="bg-[#0E1B6B] text-center flex p-5 items-center">
+            <div
+              className={`title-wrapper  overflow-hidden ${
+                isOpen ? "w-full" : "w-0"
+              } `}
+            >
+              <h2
+                className={`text-white text-left uppercase text-lg font-bold transition-all`}
+              >
+                scanocular
+              </h2>
+            </div>
+            <button
+              className={` text-2xl  bg-primary-blue p-3 rounded-xl text-white duration-500 ease-out`}
+              onClick={() => {
+                setIsOpen(!isOpen);
+              }}
+            >
+              <BsGridFill />
+            </button>
           </div>
-          <div className="relative z-10 px-8 my-8 flex flex-col gap-4">
-            {/* <LinkItem
+          <sideContext.Provider value={isOpen}>
+            <div className="relative z-10 px-8 my-8 flex flex-col gap-4">
+              {/* <LinkItem
               href="/dashboard/home"
               query="home"
               onClick={() => device == "mobile" && setIsOpen(false)}
-            >
+              >
               <BsSpeedometer2 /> Dashboard
-            </LinkItem>
-            <LinkItem
+              </LinkItem>
+              <LinkItem
               href="/dashboard/datapasien"
               query="datapasien"
               onClick={() => device == "mobile" && setIsOpen(false)}
-            >
+              >
               <BsFillFileEarmarkTextFill /> Data Pasien
             </LinkItem> */}
-            <LinkItem
-              href="/dashboard/konfirmasi"
-              query="konfirmasi"
-              onClick={() => device == "mobile" && setIsOpen(false)}
-            >
-              <BsEyeFill /> Konfirmasi Katarak
-            </LinkItem>
-            <LinkItem
-              href="/dashboard/konfirmasiglukoma"
-              query="konfirmasiglukoma"
-              onClick={() => device == "mobile" && setIsOpen(false)}
-            >
-              <BsFileBarGraphFill /> Konfirmasi Screening
-            </LinkItem>
-            <LinkItem
-              href="/dashboard/glukoma"
-              query="glukoma"
-              onClick={() => device == "mobile" && setIsOpen(false)}
-            >
-              <BsSearch /> Cek Funduscopy
-            </LinkItem>
+              <LinkItem
+                href="/dashboard/konfirmasi"
+                query="konfirmasi"
+                onClick={() => device == "mobile" && setIsOpen(false)}
+                text={"Konfirmasi Katarak"}
+              >
+                <BsEyeFill size={25} />
+              </LinkItem>
+              <LinkItem
+                href="/dashboard/konfirmasiglukoma"
+                query="konfirmasiglukoma"
+                onClick={() => device == "mobile" && setIsOpen(false)}
+                text={"Konfirmasi Screening"}
+              >
+                <BsFileBarGraphFill size={25} />
+              </LinkItem>
+              <LinkItem
+                href="/dashboard/glukoma"
+                query="glukoma"
+                onClick={() => device == "mobile" && setIsOpen(false)}
+                text={"Cek Funduscopy"}
+              >
+                <BsSearch size={25} />
+              </LinkItem>
 
-            {/* <LinkItem
+              {/* <LinkItem
               href="/dashboard/diabetes"
               query="diabetes"
               onClick={() => device == "mobile" && setIsOpen(false)}
-            >
+              >
               <BsFillFolderFill /> Cek Mata DR
             </LinkItem> */}
-          </div>
+            </div>
+          </sideContext.Provider>
         </div>
-        <div className="px-8 flex items-center gap-3 break-words my-6  text-white">
+        <div className={`flex text-white p-5`}>
           <Image
             src="/assets/dashboard/person.png"
-            className="rounded-full"
+            className="rounded-full object-contain"
             width={60}
             height={20}
             alt="profile image"
           />
-          <div className="w-full relative">
-            <h2 className="text-md">{data.data.name}</h2>
-            <h3 className="break-all font-thin text-sm">{data.data.email}</h3>
+          <div
+            className={`overflow-hidden transition-all  ${
+              isOpen ? "w-full ml-3" : "w-0"
+            } `}
+          >
+            <h4 className="text-md">{data.data.name}</h4>
+            <span className=" font-thin text-sm">{data.data.email}</span>
           </div>
         </div>
       </div>
-      <div className="col-span-10 w-full bg-gray-50 h-screem">
+      <div className="col-span-10 w-full bg-gray-50 h-screen ">
         <div
           className={`w-full bg-white h-20 flex  items-center md:px-12 px-8 text-xl flex ${"justify-between"} duration-500`}
         >
-          <button
-            className={` text-2xl  bg-primary-blue p-3 rounded-xl text-white duration-500 ease-out`}
-            onClick={() => {
-              setIsOpen(!isOpen);
-            }}
-          >
-            <BsGridFill />
-          </button>
           <BsFillBellFill />
         </div>
         <div className="bg-gray-50 px-8 md:px-12 absolute">
